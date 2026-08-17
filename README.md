@@ -1,4 +1,4 @@
-# AI Chat Graph v0.1.4
+# AI Chat Graph v0.1.5
 
 AI Chat Graph is `git log --graph` for Codex conversations. It is a read-only VS Code workspace extension that loads stored Codex threads through the official `codex app-server` stdio JSONL transport, groups related threads by `sessionId`, and renders each user turn as a node in a deterministic fork graph.
 
@@ -20,6 +20,7 @@ Source code: [github.com/xuanzhengyang/ai-chat-graph](https://github.com/xuanzhe
 - Shows real Thread and Turn timestamps from Codex, orders conversations and prompts newest first, and shows each Turn Detail chronologically with the User Prompt first.
 - Places each Prompt timestamp below its text and provides a draggable divider between Prompt Graph and Turn Detail.
 - Runs as a workspace extension, so Remote SSH starts `codex app-server` on the remote Extension Host.
+- Resolves Codex from `aiChatGraph.codexExecutable`, the Extension Host `PATH`, or the `openai.chatgpt` extension's bundled executable, in that order.
 - Uses only TypeScript, Node.js, HTML, CSS, SVG, and vanilla JavaScript.
 
 AI Chat Graph does not call any Codex write method. Its app-server request allowlist contains only `initialize`, `thread/list`, and `thread/read`; `initialized` is the required notification.
@@ -27,8 +28,27 @@ AI Chat Graph does not call any Codex write method. Its app-server request allow
 ## Requirements
 
 - VS Code 1.90 or newer.
-- A `codex` CLI executable available in the Extension Host `PATH`.
-- For Remote SSH, install the extension on the SSH host and make `codex` available on that host.
+- A usable Codex CLI found by one of the supported resolution methods below.
+- For Remote SSH, install AI Chat Graph on the SSH host; executable resolution occurs on that remote Extension Host.
+
+## Codex executable resolution
+
+AI Chat Graph resolves the executable in this order:
+
+1. `aiChatGraph.codexExecutable`.
+2. `codex` in the Extension Host `PATH`.
+3. The platform-matched Codex bundled with the installed `openai.chatgpt` extension.
+4. A detailed error listing every failed resolution stage and how to configure the path.
+
+The setting supports absolute paths, paths relative to the workspace folder, command names, `~`, `${env:NAME}`, and `${workspaceFolder}`. For example:
+
+```json
+{
+  "aiChatGraph.codexExecutable": "${env:HOME}/.local/bin/codex"
+}
+```
+
+In a Remote SSH window, set the path in that remote window's Settings so it points to an executable on the SSH host. Changing the setting stops the current app-server; the next Refresh starts it with the newly resolved executable.
 
 ## Build and test
 
@@ -38,14 +58,14 @@ npm test
 npm run package
 ```
 
-The package command creates `agentgraph-0.1.4.vsix`.
+The package command creates `agentgraph-0.1.5.vsix`.
 
 ## Install
 
 From a terminal associated with the target VS Code instance:
 
 ```bash
-code --install-extension agentgraph-0.1.4.vsix
+code --install-extension agentgraph-0.1.5.vsix
 ```
 
 For Remote SSH, open the Extensions view in the remote window and install the VSIX into `SSH: <host>`.

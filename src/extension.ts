@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { CodexAppServerClient } from "./codex/AppServerClient";
+import { resolveCodexExecutable } from "./codex/CodexExecutableResolver";
 import { AgentGraphPanel } from "./webview/AgentGraphPanel";
 
 let appServerClient: CodexAppServerClient | undefined;
@@ -8,7 +9,15 @@ let outputChannel: vscode.OutputChannel | undefined;
 
 export function activate(context: vscode.ExtensionContext): void {
   outputChannel = vscode.window.createOutputChannel("AI Chat Graph");
-  appServerClient = new CodexAppServerClient(outputChannel);
+  appServerClient = new CodexAppServerClient(outputChannel, () => {
+    const configuration = vscode.workspace.getConfiguration("aiChatGraph");
+    const openaiExtension = vscode.extensions.getExtension("openai.chatgpt");
+    return resolveCodexExecutable({
+      configuredPath: configuration.get<string>("codexExecutable"),
+      workspaceFolder: resolveWorkspaceRoot()?.uri.fsPath,
+      openaiExtensionPath: openaiExtension?.extensionPath,
+    });
+  });
 
   const open = async (): Promise<void> => {
     const workspaceFolder = resolveWorkspaceRoot();
@@ -48,6 +57,13 @@ export function activate(context: vscode.ExtensionContext): void {
       } else {
         await currentPanel.refresh();
       }
+    }),
+    vscode.workspace.onDidChangeConfiguration(async (event) => {
+      if (!event.affectsConfiguration("aiChatGraph.codexExecutable")) {
+        return;
+      }
+      outputChannel?.appendLine("aiChatGraph.codexExecutable changed; restarting Codex app-server on the next refresh.");
+      await appServerClient?.stop();
     }),
   );
 }

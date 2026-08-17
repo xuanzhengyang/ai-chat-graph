@@ -2,7 +2,7 @@
   "name": "agentgraph",
   "displayName": "AI Chat Graph",
   "description": "Git-style visualization of Codex prompt and fork history.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "shaunyang-tools",
   "author": {
     "name": "xuanzhengyang",
@@ -49,13 +49,24 @@
         "command": "agentGraph.refresh",
         "title": "AI Chat Graph: Refresh"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "AI Chat Graph",
+      "properties": {
+        "aiChatGraph.codexExecutable": {
+          "type": "string",
+          "default": "",
+          "scope": "machine-overridable",
+          "markdownDescription": "Optional Codex CLI executable path for the machine running the Extension Host. Supports `~`, `${env:NAME}`, `${workspaceFolder}`, absolute paths, workspace-relative paths, and command names. Resolution priority: this setting, Extension Host `PATH`, then the Codex bundled with `openai.chatgpt`."
+        }
+      }
+    }
   },
   "scripts": {
     "compile": "tsc -p .",
     "test": "npm run compile && node --test dist/test/*.test.js",
     "probe": "npm run compile && node dist/scripts/probe-app-server.js",
-    "package": "npm run compile && vsce package --no-dependencies --out agentgraph-0.1.4.vsix"
+    "package": "npm run compile && vsce package --no-dependencies --out agentgraph-0.1.5.vsix"
   },
   "devDependencies": {
     "@types/node": "^18.19.0",

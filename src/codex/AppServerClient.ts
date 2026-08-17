@@ -1,6 +1,10 @@
 import { ChildProcessWithoutNullStreams, spawn } from "node:child_process";
 import * as readline from "node:readline";
 import {
+  CodexExecutableResolution,
+  resolveCodexExecutable,
+} from "./CodexExecutableResolver";
+import {
   AllowedRequestMethod,
   DiagnosticLogger,
   isRecord,
@@ -28,7 +32,10 @@ export class CodexAppServerClient {
   private stopping = false;
   private stderrTail: string[] = [];
 
-  public constructor(private readonly logger: DiagnosticLogger) {}
+  public constructor(
+    private readonly logger: DiagnosticLogger,
+    private readonly executableResolver: () => Promise<CodexExecutableResolution> = () => resolveCodexExecutable(),
+  ) {}
 
   public async start(): Promise<void> {
     if (this.process) {
@@ -108,7 +115,9 @@ export class CodexAppServerClient {
   private async startAndInitialize(): Promise<void> {
     this.stderrTail = [];
     this.stopping = false;
-    const process = spawn("codex", ["app-server"], {
+    const resolution = await this.executableResolver();
+    this.logger.appendLine(`Using Codex executable from ${resolution.source}: ${resolution.executable}`);
+    const process = spawn(resolution.executable, ["app-server"], {
       stdio: ["pipe", "pipe", "pipe"],
     });
     this.process = process;
@@ -127,7 +136,7 @@ export class CodexAppServerClient {
     });
     process.on("error", (error: NodeJS.ErrnoException) => {
       const message = error.code === "ENOENT"
-        ? "AI Chat Graph could not start Codex App Server. Command not found: codex. Verify that Codex CLI is installed and available in the current Extension Host PATH."
+        ? `AI Chat Graph resolved Codex at "${resolution.executable}", but the executable disappeared or could not be started. Check aiChatGraph.codexExecutable and the Extension Host filesystem.`
         : `Codex app-server process error: ${error.message}`;
       this.handleDisconnect(new Error(message));
     });
@@ -144,7 +153,7 @@ export class CodexAppServerClient {
         clientInfo: {
           name: "agentgraph",
           title: "AI Chat Graph",
-          version: "0.1.4",
+          version: "0.1.5",
         },
       });
       this.sendInitialized();

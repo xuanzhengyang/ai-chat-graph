@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.1.5
+
+- Add the `aiChatGraph.codexExecutable` setting with home, environment-variable, workspace, relative-path, and command-name expansion.
+- Resolve Codex from the user setting, Extension Host `PATH`, or the `openai.chatgpt` extension's bundled executable, in that order.
+- Validate executable candidates and report each failed resolution stage with Remote SSH configuration guidance.
+- Restart the Codex app-server on the next refresh after the executable setting changes.
+
 ## 0.1.4
 
 - Add GitHub repository, homepage, and issue links to the extension package.
