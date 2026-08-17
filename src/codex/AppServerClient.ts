@@ -144,7 +144,7 @@ export class CodexAppServerClient {
         clientInfo: {
           name: "agentgraph",
           title: "AI Chat Graph",
-          version: "0.1.3",
+          version: "0.1.4",
         },
       });
       this.sendInitialized();

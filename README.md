@@ -1,8 +1,12 @@
-# AI Chat Graph v0.1.3
+# AI Chat Graph v0.1.4
 
 AI Chat Graph is `git log --graph` for Codex conversations. It is a read-only VS Code workspace extension that loads stored Codex threads through the official `codex app-server` stdio JSONL transport, groups related threads by `sessionId`, and renders each user turn as a node in a deterministic fork graph.
 
 Source code: [github.com/xuanzhengyang/ai-chat-graph](https://github.com/xuanzhengyang/ai-chat-graph)
+
+## Preview
+
+![AI Chat Graph showing a prompt graph and chronological turn detail](media/example_image.png)
 
 ## Features
 
@@ -34,14 +38,14 @@ npm test
 npm run package
 ```
 
-The package command creates `agentgraph-0.1.3.vsix`.
+The package command creates `agentgraph-0.1.4.vsix`.
 
 ## Install
 
 From a terminal associated with the target VS Code instance:
 
 ```bash
-code --install-extension agentgraph-0.1.3.vsix
+code --install-extension agentgraph-0.1.4.vsix
 ```
 
 For Remote SSH, open the Extensions view in the remote window and install the VSIX into `SSH: <host>`.

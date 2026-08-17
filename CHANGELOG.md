@@ -1,11 +1,16 @@
 # Change Log
 
+## 0.1.4
+
+- Add GitHub repository, homepage, and issue links to the extension package.
+- Release the extension source under the MIT License with `xuanzhengyang` authorship.
+- Add an AI Chat Graph interface preview to the README and extension package.
+
 ## 0.1.3
 
 - Add a draggable, keyboard-accessible divider between Prompt Graph and Turn Detail.
 - Remember the selected pane width and restore it when the Webview reopens.
 - Move each Prompt timestamp below its text to reduce horizontal space usage.
-- Add GitHub repository links and release the source under the MIT License.
 
 ## 0.1.2
 
