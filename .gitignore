@@ -1,0 +1,6 @@
+dist/
+node_modules/
+*.vsix
+docs/probe-output.txt
+.codex-plugin/
+docs/probe-notes.md

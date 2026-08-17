@@ -1,0 +1,13 @@
+.codex-plugin/**
+.gitignore
+src/**
+test/**
+scripts/**
+docs/**
+node_modules/**
+tsconfig.json
+package-lock.json
+*.vsix
+dist/test/**
+dist/scripts/**
+**/*.map
